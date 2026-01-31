@@ -1,1 +1,9 @@
 /target
+Cargo.lock
+.DS_Store
+test*.gif
+test*.png
+test*.jpg
+tests/testdata/caltesting
+.idea
+rustfmt.toml

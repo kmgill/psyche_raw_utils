@@ -1,6 +1,63 @@
 [package]
 name = "psyche-raw-utils"
-version = "0.1.0"
-edition = "2024"
+version = "0.0.1"
+authors = ["Kevin M. Gill <apoapsys@gmail.com>"]
+edition = "2021"
+description = "Utilities for working with publicly available raw Psyche images"
+repository = "https://github.com/kmgill/psyche_raw_utils"
+readme = "README.md"
+keywords = ["psyche"]
+license = "MIT"
+
+[[bin]]
+name = "pru"
+path = "bin/main.rs"
+
+[profile.release]
+strip = true # Automatically strip symbols from the binary.
+#debug = 2
+
+[features]
 
 [dependencies]
+proc-macro2 = "1.0.106"
+image = "0.25.9"
+clap = { version = "4.5.54", features = ["derive"] }
+serde_json = "1.0.149"
+const_format = "0.2.35"
+reqwest = { version = "0.13.1", features = ["stream"] }
+platforms = "3.7.0"
+lab = "0.11.0"
+toml = "0.9.8"
+serde = { version = "1.0.228", features = ["derive"] }
+string-builder = "0.2.0"
+sciimg = { git = "https://github.com/MarsRaw/sciimg.git", branch = "kmgill_develop", features = [
+    "rayon",
+] }
+#sciimg = {path = "../sciimg"}
+stump = { git = "https://github.com/MarsRaw/stump.git" }
+weezl = "0.1.5"
+gif = "0.14.1"
+rayon = "1.11.0"
+chrono = "0.4.43"
+dirs = "6.0.0"
+wild = "2.2.1"
+colored = "3.1.1"
+backtrace = "0.3.76"
+termsize = "0.1.9"
+lazy_static = "1.5.0"
+anyhow = "1.0.100"
+bytes = "1.11.0"
+thiserror = "2.0.18"
+tokio = { version = "1.49.0", features = ["full"] }
+glob = "0.3.3"
+regex = "1.12.2"
+url = "2.5.8"
+tempfile = "3.24.0"
+futures-util = "0.3.31"
+indicatif = "0.18.3"
+cli-table = "0.5.0"
+itertools = "0.14.0"
+futures = "0.3.31"
+dng = "1.5.4"
+clap_complete = "4.5.65"
