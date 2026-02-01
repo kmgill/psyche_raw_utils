@@ -41,6 +41,12 @@ impl HttpFetcher {
             timeout: Duration::from_secs(DEFAULT_TIMEOUT),
             numparams: 0,
             client: Client::builder()
+                    .https_only(true)
+                    .user_agent("pru/1.0.0")
+                    .http2_prior_knowledge()
+                    .gzip(true)
+                    .brotli(true)
+                    .http2_adaptive_window(true)
                 .timeout(Duration::from_secs(DEFAULT_TIMEOUT))
                 .build()?,
         })
@@ -63,11 +69,10 @@ impl HttpFetcher {
     // I'd probably just use the .get(), building my client in main.
     // The reqwest::Client is wrapped in an Arc, so you can clone it cheaply, it's designed for reuse --not so much to be instantiated for every single request you want to make.
     async fn fetch(&self) -> Result<SimpleHttpResponse> {
-        info!("Request URI: {}", self.uri);
+        
         let res = self.client.get(self.uri.as_str()).send().await?;
         let status = res.status();
-        info!("Status: {:?}", status);
-        info!("Response: {:?}", res);
+
         Ok(SimpleHttpResponse {
             bytes: res.bytes().await?.to_vec(),
             status: status.as_u16(),

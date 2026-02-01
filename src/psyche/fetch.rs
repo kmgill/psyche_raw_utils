@@ -120,7 +120,6 @@ impl remotequery::Fetch for PsycheFetch {
     ) -> Result<remotequery::RemoteStats, FetchError> {
         match submit_query(query).await {
             Ok(v) => {
-                println!("{}", v);
                 let res: PsycheApiResults = serde_json::from_str(v.as_str()).unwrap();
                 let pages = (res.total as f32 / query.num_per_page as f32).ceil() as i32;
                 Ok(remotequery::RemoteStats {

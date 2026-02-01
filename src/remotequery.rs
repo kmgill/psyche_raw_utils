@@ -84,8 +84,9 @@ pub async fn fetch_image(
         None => String::from(image_url),
     };
 
+    let full_url :String = format!("{}{}", constants::url::NASA_RAW_HOST_URL, image_url);
     // would rather do this as if !... but I'm assuming these vprintln! calls are.. impotant for some reason...
-    if let Ok(image_data) = httpfetch::simple_fetch_bin(image_url).await {
+    if let Ok(image_data) = httpfetch::simple_fetch_bin(full_url.as_str()).await {
         let path = Path::new(write_to.as_str());
         info!("Writing image data to {}", write_to);
 
