@@ -66,6 +66,8 @@ impl HttpFetcher {
         info!("Request URI: {}", self.uri);
         let res = self.client.get(self.uri.as_str()).send().await?;
         let status = res.status();
+        info!("Status: {:?}", status);
+        info!("Response: {:?}", res);
         Ok(SimpleHttpResponse {
             bytes: res.bytes().await?.to_vec(),
             status: status.as_u16(),

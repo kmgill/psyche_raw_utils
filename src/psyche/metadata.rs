@@ -10,13 +10,13 @@ use std::io::Read;
 #[derive(Serialize, Deserialize, Clone)]
 pub struct ImageRecord {
     pub id: u32,
-    pub imageid: String,
+    pub image_id: String,
     pub url: String,
-    pub date_taken_utc: String,
+    pub date: String,
     pub date_received: String,
     pub width: u32,
     pub height: u32,
-    pub instrument: String,
+    pub camera: String,
     pub camera_name: String,
     pub camera_title: String,
     pub filter: u32,
@@ -33,9 +33,10 @@ pub struct ImageRecord {
 #[derive(Serialize, Deserialize)]
 pub struct PsycheApiResults {
     pub items: Vec<ImageRecord>,
-    pub per_page: String,
+    pub per_page: u32,
     pub total: u32,
     pub page: u32,
+    pub more: bool
 }
 
 impl ImageMetadata for ImageRecord {
@@ -48,7 +49,7 @@ impl ImageMetadata for ImageRecord {
     }
 
     fn get_imageid(&self) -> String {
-        self.imageid.clone()
+        self.image_id.clone()
     }
 
     fn get_url(&self) -> String {
@@ -56,7 +57,7 @@ impl ImageMetadata for ImageRecord {
     }
 
     fn get_date_taken_utc(&self) -> String {
-        self.date_taken_utc.clone()
+        self.date.clone()
     }
 
     fn get_width(&self) -> u32 {
@@ -68,7 +69,7 @@ impl ImageMetadata for ImageRecord {
     }
 
     fn get_instrument(&self) -> String {
-        self.instrument.clone()
+        self.camera.clone()
     }
 
     fn get_camera_name(&self) -> String {

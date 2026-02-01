@@ -1,3 +1,4 @@
+pub mod psychefetch;
 pub mod runnable;
 
 /// Creates the default progress bar as a static ref in global space. Uses lazy_static

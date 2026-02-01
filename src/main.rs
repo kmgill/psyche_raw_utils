@@ -33,6 +33,8 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Pru {
+    #[clap(name = "fetch")]
+    PsycheFetch(psychefetch::PsycheFetch)
     // MslFetch(msl::mslfetch::MslFetch),
     // MslDate(msl::msldate::MslDate),
 
@@ -55,13 +57,12 @@ async fn main() -> Result<(), anyhow::Error> {
         stump::set_verbose(true);
     }
 
-    // if let Err(why) = match args.command {
-    //     Mru::MslFetch(args) => args.run().await,
-    //     Mru::M20Fetch(args) => args.run().await,
-    // } {
-    //     error!("{}", "Unhandled program error:".red());
-    //     error!("{}", why);
-    // };
+    if let Err(why) = match args.command {
+        Pru::PsycheFetch(args) => args.run().await,
+    } {
+        error!("{}", "Unhandled program error:".red());
+        error!("{}", why);
+    };
     info!("Runtime: {}s", t1.elapsed().as_secs_f64());
     Ok(())
 }
