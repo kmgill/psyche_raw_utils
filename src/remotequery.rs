@@ -61,13 +61,13 @@ impl fmt::Display for FetchError {
     }
 }
 
-pub fn image_exists_on_filesystem(image_url: &str, output_path: Option<&str>) -> bool {
+pub fn image_exists_on_filesystem(image_file_name: &str, output_path: Option<&str>) -> bool {
     let write_to = match output_path {
         Some(p) => {
-            let bn = path::basename(image_url);
+            let bn = path::basename(image_file_name);
             format!("{}/{}", p, bn)
         }
-        None => String::from(image_url),
+        None => String::from(image_file_name),
     };
     path::file_exists(&write_to)
 }
@@ -165,12 +165,8 @@ fn print_table(images: &[Metadata], query: &RemoteQuery) {
     println!("{}", &table.display().unwrap());
 }
 
-async fn download_remote_image(
-    image_md: &Metadata,
-    query: &RemoteQuery,
-    on_image_downloaded: OnImageDownloaded,
-) -> Result<String, FetchError> {
-    let image_base_name = format!(
+fn assemble_output_file_base_name(image_md: &Metadata) -> String {
+    format!(
         "PSY_{}_{}_{}",
         match image_md.spacecraft_clock {
             Some(sc) => sc.to_string().replace(".", "-"),
@@ -178,7 +174,15 @@ async fn download_remote_image(
         },
         image_md.instrument,
         image_md.filter_name.to_uppercase().replace(" ", "_"),
-    );
+    )
+}
+
+async fn download_remote_image(
+    image_md: &Metadata,
+    query: &RemoteQuery,
+    on_image_downloaded: OnImageDownloaded,
+) -> Result<String, FetchError> {
+    let image_base_name = assemble_output_file_base_name(image_md);
 
     match fetch_image(
         &image_md.url,
@@ -231,7 +235,10 @@ pub async fn perform_fetch<T: Fetch>(
                 .filter(|_| !query.list_only)
                 .filter(|md| {
                     !query.only_new
-                        || !image_exists_on_filesystem(&md.url, Some(&query.output_path))
+                        || !image_exists_on_filesystem(
+                            format!("{}.png", assemble_output_file_base_name(md)).as_str(),
+                            Some(&query.output_path),
+                        )
                 })
                 .collect();
 
