@@ -38,7 +38,7 @@ lab = "0.11.0"
 toml = "0.9.8"
 serde = { version = "1.0.228", features = ["derive"] }
 string-builder = "0.2.0"
-sciimg = { git = "https://github.com/MarsRaw/sciimg.git", branch = "kmgill_develop", features = [
+sciimg = { git = "https://github.com/MarsRaw/sciimg.git", branch = "main", features = [
     "rayon",
 ] }
 #sciimg = {path = "../sciimg"}
@@ -68,3 +68,6 @@ itertools = "0.14.0"
 futures = "0.3.31"
 dng = "1.5.4"
 clap_complete = "4.5.65"
+
+[patch.crates-io]
+jpeg-decoder = { git = "https://github.com/MarsRaw/jpeg-decoder.git", branch = "optional-zero-ac63" }

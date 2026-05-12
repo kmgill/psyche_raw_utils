@@ -74,17 +74,17 @@ pub fn image_exists_on_filesystem(image_url: &str, output_path: Option<&str>) ->
 
 pub async fn fetch_image(
     image_url: &str,
+    output_file_name: &str,
     output_path: Option<&str>,
 ) -> Result<PathBuf, FetchError> {
     let write_to = match output_path {
         Some(p) => {
-            let bn = path::basename(image_url);
-            format!("{}/{}", p, bn)
+            format!("{}/{}", p, output_file_name)
         }
-        None => String::from(image_url),
+        None => String::from(output_file_name),
     };
 
-    let full_url :String = format!("{}{}", constants::url::NASA_RAW_HOST_URL, image_url);
+    let full_url: String = format!("{}{}", constants::url::NASA_RAW_HOST_URL, image_url);
     // would rather do this as if !... but I'm assuming these vprintln! calls are.. impotant for some reason...
     if let Ok(image_data) = httpfetch::simple_fetch_bin(full_url.as_str()).await {
         let path = Path::new(write_to.as_str());
@@ -170,10 +170,29 @@ async fn download_remote_image(
     query: &RemoteQuery,
     on_image_downloaded: OnImageDownloaded,
 ) -> Result<String, FetchError> {
-    match fetch_image(&image_md.url, Some(query.output_path.as_ref())).await {
+    let image_base_name = format!(
+        "PSY_{}_{}_{}",
+        match image_md.spacecraft_clock {
+            Some(sc) => sc.to_string().replace(".", "-"),
+            None => image_md.imageid.clone(),
+        },
+        image_md.instrument,
+        image_md.filter_name.to_uppercase().replace(" ", "_"),
+    );
+
+    match fetch_image(
+        &image_md.url,
+        format!("{}.png", image_base_name).as_str(),
+        Some(query.output_path.as_ref()),
+    )
+    .await
+    {
         Ok(_) => {
-            let image_base_name = path::basename(image_md.url.as_str());
-            _ = save_image_json(&image_base_name, image_md, Some(query.output_path.as_ref()));
+            _ = save_image_json(
+                format!("{}.json", image_base_name).as_str(),
+                image_md,
+                Some(query.output_path.as_ref()),
+            );
             on_image_downloaded(image_md);
             Ok(image_base_name)
         }
