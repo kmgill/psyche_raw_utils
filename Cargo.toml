@@ -28,6 +28,7 @@ const_format = "0.2.35"
 #reqwest = { version = "0.13.1", features = ["stream"] }
 reqwest = { version = "0.13.3", default-features = false, features = [
     "http2",
+    "native-tls",
     "brotli",
     "gzip",
     "stream",
