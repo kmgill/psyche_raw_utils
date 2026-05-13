@@ -1,9 +1,18 @@
+mod caldata;
+mod calibfile;
+mod calibration;
+mod calprofile;
 mod constants;
+mod decompanding;
 mod enums;
+mod flatfield;
 mod httpfetch;
+mod inpaintmask;
 mod jsonfetch;
+mod memcache;
 mod metadata;
 mod psyche;
+mod psycheimage;
 mod remotequery;
 mod serializers;
 mod subs;
@@ -14,12 +23,14 @@ use colored::Colorize;
 use subs::runnable::RunnableSubcommand;
 use subs::*;
 
-
 #[macro_use]
 extern crate stump;
 
 extern crate wild;
 use clap::{Parser, Subcommand};
+
+#[macro_use]
+extern crate lazy_static;
 
 #[derive(Parser)]
 #[clap(name = "pru")]
@@ -35,7 +46,11 @@ struct Cli {
 #[derive(Subcommand)]
 enum Pru {
     #[clap(name = "fetch")]
-    PsycheFetch(psychefetch::PsycheFetch)
+    PsycheFetch(psychefetch::PsycheFetch),
+    Info(info::Info),
+    Calibrate(calibrate::Calibrate),
+    HpcFilter(hpcfilter::HpcFilter),
+    Profile(profile::Profile),
     // MslFetch(msl::mslfetch::MslFetch),
     // MslDate(msl::msldate::MslDate),
 
@@ -60,6 +75,10 @@ async fn main() -> Result<(), anyhow::Error> {
 
     if let Err(why) = match args.command {
         Pru::PsycheFetch(args) => args.run().await,
+        Pru::Info(args) => args.run().await,
+        Pru::Calibrate(args) => args.run().await,
+        Pru::HpcFilter(args) => args.run().await,
+        Pru::Profile(args) => args.run().await,
     } {
         error!("{}", "Unhandled program error:".red());
         error!("{}", why);

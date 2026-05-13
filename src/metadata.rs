@@ -48,6 +48,27 @@ pub struct Metadata {
     pub spacecraft_clock: Option<f64>,
     pub created_at: String,
     pub updated_at: String,
+
+    #[serde(default = "serializers::default_false")]
+    pub decompand: bool,
+
+    #[serde(default = "serializers::default_false")]
+    pub debayer: bool,
+
+    #[serde(default = "serializers::default_false")]
+    pub flatfield: bool,
+
+    #[serde(default = "serializers::default_false")]
+    pub radiometric: bool,
+
+    #[serde(default = "serializers::default_false")]
+    pub inpaint: bool,
+
+    #[serde(default = "serializers::default_false")]
+    pub cropped: bool,
+
+    #[serde(default = "serializers::default_vec")]
+    pub history: Vec<String>,
 }
 
 pub fn convert_to_std_metadata<T: ImageMetadata>(im: &T) -> Metadata {
@@ -71,6 +92,13 @@ pub fn convert_to_std_metadata<T: ImageMetadata>(im: &T) -> Metadata {
         spacecraft_clock: im.get_spacecraft_clock(),
         created_at: im.get_created_at(),
         updated_at: im.get_updated_at(),
+        decompand: serializers::default_false(),
+        debayer: serializers::default_false(),
+        flatfield: serializers::default_false(),
+        radiometric: serializers::default_false(),
+        inpaint: serializers::default_false(),
+        cropped: serializers::default_false(),
+        history: serializers::default_vec(),
     }
 }
 

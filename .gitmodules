@@ -1,0 +1,3 @@
+[submodule "psyche-raw-utils-data"]
+	path = psyche-raw-utils-data
+	url = git@github.com:kmgill/psyche-raw-utils-data.git

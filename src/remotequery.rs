@@ -169,7 +169,7 @@ fn assemble_output_file_base_name(image_md: &Metadata) -> String {
     format!(
         "PSY_{}_{}_{}",
         match image_md.spacecraft_clock {
-            Some(sc) => sc.to_string().replace(".", "-"),
+            Some(sc) => ((sc * 100.0).round() / 100.0).to_string().replace(".", "-"),
             None => image_md.imageid.clone(),
         },
         image_md.instrument,

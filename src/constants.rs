@@ -4,9 +4,10 @@ pub const DEFAULT_BLUE_WEIGHT: f32 = 1.0;
 
 pub const OUTPUT_FILENAME_APPEND: &str = "rjcal";
 
+pub const RAW_IMAGE_CREDIT: &str = "NASA/JPL-Caltech/ASU";
+
 pub mod url {
-    pub const NASA_RAW_HOST_URL: &str =
-        "https://solarsystem.nasa.gov";
+    pub const NASA_RAW_HOST_URL: &str = "https://solarsystem.nasa.gov";
     pub const PSYCHE_RAW_WEBSERVICE_URL: &str =
         "https://solarsystem.nasa.gov/api/v1/raw_image_psyche_items/";
     // pub const MSL_LATEST_WEBSERVICE_URL: &str =

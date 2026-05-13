@@ -1,3 +1,7 @@
+pub mod calibrate;
+pub mod hpcfilter;
+pub mod info;
+pub mod profile;
 pub mod psychefetch;
 pub mod runnable;
 
@@ -75,8 +79,8 @@ macro_rules! pb_set_length {
 #[macro_export]
 macro_rules! pb_set_print_and_length {
     ($x: expr) => {
-        pb_set_print!();
-        pb_set_length!($x);
+        crate::pb_set_print!();
+        crate::pb_set_length!($x);
     };
 }
 

@@ -11,8 +11,8 @@ pub enum Mission {
 // Supported instruments
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Default)]
 pub enum Instrument {
-    PsycheImagerA,
-    PsycheImagerB,
+    PsycheCameraA,
+    PsycheCameraB,
     #[default]
     None,
 }
@@ -22,8 +22,8 @@ impl FromStr for Instrument {
 
     fn from_str(s: &str) -> Result<Instrument, ParseIntError> {
         Ok(match s.to_uppercase().as_str() {
-            "A" => Instrument::PsycheImagerA,
-            "B" => Instrument::PsycheImagerB,
+            "A" => Instrument::PsycheCameraA,
+            "B" => Instrument::PsycheCameraB,
             _ => Instrument::None,
         })
     }

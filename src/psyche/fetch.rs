@@ -11,8 +11,6 @@ use futures::future;
 use serde::{Deserialize, Serialize};
 use tokio;
 
-
-
 /// Submits a query to the M20 api endpoint
 async fn submit_query(query: &remotequery::RemoteQuery) -> Result<String> {
     let joined_cameras = query.cameras.join("|");
@@ -25,8 +23,14 @@ async fn submit_query(query: &remotequery::RemoteQuery) -> Result<String> {
         stringvec_b("per_page", format!("{}", query.num_per_page)),
         stringvec("order", "date_received+desc"),
         stringvec_b("search", format!("({}):camera", joined_cameras)),
-        stringvec_b("condition_1", format!("{}:date_received:gte", query.min_date)),
-        stringvec_b("condition_2", format!("{}:date_received:lte", query.max_date)),
+        stringvec_b(
+            "condition_1",
+            format!("{}:date_received:gte", query.min_date),
+        ),
+        stringvec_b(
+            "condition_2",
+            format!("{}:date_received:lte", query.max_date),
+        ),
     ];
 
     if let Some(p) = query.page {
@@ -135,18 +139,15 @@ impl remotequery::Fetch for PsycheFetch {
     }
 
     /*
-    
+
     https://solarsystem.nasa.gov/api/v1/raw_image_psyche_items/?order=date_received+desc&per_page=60&page=0&search=(A)%3Acamera
      */
     fn make_instrument_map(&self) -> InstrumentMap {
         InstrumentMap {
-            map: [
-                ("A", vec!["A"]),
-                ("B", vec!["B"]),
-            ]
-            .iter()
-            .cloned()
-            .collect(),
+            map: [("A", vec!["A"]), ("B", vec!["B"])]
+                .iter()
+                .cloned()
+                .collect(),
         }
     }
 }
