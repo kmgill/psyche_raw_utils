@@ -5,7 +5,8 @@ use std::str::FromStr;
 // Support Clipper, etc, in the future?
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Mission {
-    PSYCHE, // Psyche
+    #[expect(unused)]
+    Psyche, // Psyche
 }
 
 // Supported instruments

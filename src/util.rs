@@ -27,18 +27,22 @@ pub fn string_is_valid_f64(s: &str) -> bool {
     sciutil::string_is_valid_f64(s)
 }
 
+#[expect(unused)]
 pub fn string_is_valid_f32(s: &str) -> bool {
     sciutil::string_is_valid_f32(s)
 }
 
+#[expect(unused)]
 pub fn string_is_valid_i32(s: &str) -> bool {
     sciutil::string_is_valid_i32(s)
 }
 
+#[expect(unused)]
 pub fn string_is_valid_u16(s: &str) -> bool {
     sciutil::string_is_valid_u16(s)
 }
 
+#[expect(unused)]
 pub fn filename_char_at_pos(filename: &str, pos: usize) -> char {
     sciutil::filename_char_at_pos(filename, pos)
 }
@@ -71,9 +75,7 @@ macro_rules! min {
     }}
 }
 
-////////////////////////////////////
-/// Functions for supporting instrument lists
-////////////////////////////////////
+// Functions for supporting instrument lists
 
 pub struct InstrumentMap {
     pub map: HashMap<&'static str, Vec<&'static str>>,
@@ -91,6 +93,7 @@ impl InstrumentMap {
         false
     }
 
+    #[expect(unused)]
     pub fn remote_instrument_names(&self) -> Vec<String> {
         self.map
             .values()
@@ -158,12 +161,6 @@ pub fn stringvec_b(a: &str, b: String) -> Vec<String> {
     vec![a.to_owned(), b]
 }
 
-#[deprecated]
-pub fn image_exists_on_filesystem(image_url: &str) -> bool {
-    let bn = path::basename(image_url);
-    path::file_exists(bn.as_str())
-}
-
 pub fn save_image_json<T: Serialize>(
     image_url: &str,
     item: &T,
@@ -202,6 +199,7 @@ pub fn append_file_name(input_file: &str, append: &str) -> String {
     replace_image_extension(input_file, append_with_ext.as_str())
 }
 
+#[expect(unused)]
 pub fn replace_extension<S>(from_file: &S, new_extension: &str) -> Result<String>
 where
     S: AsRef<Path> + ?Sized + AsRef<OsStr>,

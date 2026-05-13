@@ -16,7 +16,7 @@ pub fn inpaint_supported_for_instrument(instrument: enums::Instrument) -> bool {
     r.is_ok()
 }
 
-fn load_mask_file(filename: &str, instrument: enums::Instrument) -> Result<ImageBuffer> {
+fn load_mask_file(filename: &str) -> Result<ImageBuffer> {
     vprintln!("Loading inpaint mask file {}", filename);
 
     if !path::file_exists(filename) {
@@ -29,5 +29,5 @@ fn load_mask_file(filename: &str, instrument: enums::Instrument) -> Result<Image
 pub fn load_mask(instrument: enums::Instrument) -> Result<ImageBuffer> {
     let mask_file = determine_mask_file(instrument)?;
 
-    load_mask_file(mask_file.as_str(), instrument)
+    load_mask_file(mask_file.as_str())
 }

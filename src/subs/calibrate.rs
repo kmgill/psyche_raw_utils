@@ -19,7 +19,6 @@ use backtrace::Backtrace;
 use rayon::prelude::*;
 use std::panic;
 use std::process;
-use std::str::FromStr;
 
 use anyhow::{anyhow, Error, Result};
 use clap::Parser;

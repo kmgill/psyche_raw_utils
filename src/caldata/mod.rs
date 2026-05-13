@@ -1,13 +1,11 @@
 use crate::httpfetch;
 use anyhow::Result;
-use dirs;
 use rayon::prelude::*;
 use std::env;
 use std::fs;
 use std::fs::File;
 use std::io::Write;
 use std::path::PathBuf;
-use stump;
 use url::Url;
 
 // TODO: I would prefer this not being hardcoded. Find how to define it in Cargo.toml

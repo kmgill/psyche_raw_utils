@@ -8,7 +8,6 @@ use crate::util::{stringvec, stringvec_b, InstrumentMap};
 use crate::{f, t};
 use anyhow::Result;
 use futures::future;
-use serde::{Deserialize, Serialize};
 use tokio;
 
 /// Submits a query to the M20 api endpoint
@@ -25,11 +24,11 @@ async fn submit_query(query: &remotequery::RemoteQuery) -> Result<String> {
         stringvec_b("search", format!("({}):camera", joined_cameras)),
         stringvec_b(
             "condition_1",
-            format!("{}:date_received:gte", query.min_date),
+            format!("{}:date_received:gte", query.start_date.format("%Y-%m-%d")),
         ),
         stringvec_b(
             "condition_2",
-            format!("{}:date_received:lte", query.max_date),
+            format!("{}:date_received:lte", query.end_date.format("%Y-%m-%d")),
         ),
     ];
 
@@ -65,9 +64,33 @@ fn api_results_to_image_vec(
     results: &PsycheApiResults,
     query: &remotequery::RemoteQuery,
 ) -> Vec<Metadata> {
-    let image_records = results.items.iter().filter(|image| {
-        !(!query.search.is_empty() && !query.search.iter().any(|i| image.image_id.contains(i)))
-    });
+    let image_records = results
+        .items
+        .iter()
+        .filter(|image| {
+            !(!query.search.is_empty() && !query.search.iter().any(|i| image.image_id.contains(i)))
+        })
+        .filter(|image| {
+            if let Some(filter) = &query.filter {
+                filter.contains(&image.filter_name)
+            } else {
+                true
+            }
+        })
+        .filter(|image| {
+            if let Some(filter) = &query.filter_num {
+                filter.contains(&image.filter)
+            } else {
+                true
+            }
+        })
+        .filter(|image| {
+            if let Some(filter) = &query.filter_wavelenth {
+                filter.contains(&image.filter_wavelength)
+            } else {
+                true
+            }
+        });
 
     image_records.map(convert_to_std_metadata).collect()
 }

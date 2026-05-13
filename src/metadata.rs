@@ -1,4 +1,5 @@
-use crate::serializers;
+use crate::serializers::{as_utc_datetime, default_false, default_vec};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use anyhow::Result;
@@ -9,8 +10,8 @@ pub trait ImageMetadata {
     fn get_id(&self) -> u32;
     fn get_imageid(&self) -> String;
     fn get_url(&self) -> String;
-    fn get_date_taken_utc(&self) -> String;
-    fn get_date_received(&self) -> String;
+    fn get_date_taken_utc(&self) -> DateTime<Utc>;
+    fn get_date_received(&self) -> DateTime<Utc>;
     fn get_width(&self) -> u32;
     fn get_height(&self) -> u32;
     fn get_instrument(&self) -> String;
@@ -23,8 +24,8 @@ pub trait ImageMetadata {
     fn get_distance(&self) -> Option<u32>;
     fn get_orbit_number(&self) -> Option<u32>;
     fn get_spacecraft_clock(&self) -> Option<f64>;
-    fn get_created_at(&self) -> String;
-    fn get_updated_at(&self) -> String;
+    fn get_created_at(&self) -> DateTime<Utc>;
+    fn get_updated_at(&self) -> DateTime<Utc>;
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]
@@ -32,8 +33,10 @@ pub struct Metadata {
     pub id: u32,
     pub imageid: String,
     pub url: String,
-    pub date_taken_utc: String,
-    pub date_received: String,
+    #[serde(with = "as_utc_datetime")]
+    pub date_taken_utc: DateTime<Utc>,
+    #[serde(with = "as_utc_datetime")]
+    pub date_received: DateTime<Utc>,
     pub width: u32,
     pub height: u32,
     pub instrument: String,
@@ -46,28 +49,30 @@ pub struct Metadata {
     pub distance: Option<u32>,
     pub orbit_number: Option<u32>,
     pub spacecraft_clock: Option<f64>,
-    pub created_at: String,
-    pub updated_at: String,
+    #[serde(with = "as_utc_datetime")]
+    pub created_at: DateTime<Utc>,
+    #[serde(with = "as_utc_datetime")]
+    pub updated_at: DateTime<Utc>,
 
-    #[serde(default = "serializers::default_false")]
+    #[serde(default = "default_false")]
     pub decompand: bool,
 
-    #[serde(default = "serializers::default_false")]
+    #[serde(default = "default_false")]
     pub debayer: bool,
 
-    #[serde(default = "serializers::default_false")]
+    #[serde(default = "default_false")]
     pub flatfield: bool,
 
-    #[serde(default = "serializers::default_false")]
+    #[serde(default = "default_false")]
     pub radiometric: bool,
 
-    #[serde(default = "serializers::default_false")]
+    #[serde(default = "default_false")]
     pub inpaint: bool,
 
-    #[serde(default = "serializers::default_false")]
+    #[serde(default = "default_false")]
     pub cropped: bool,
 
-    #[serde(default = "serializers::default_vec")]
+    #[serde(default = "default_vec")]
     pub history: Vec<String>,
 }
 
@@ -92,13 +97,13 @@ pub fn convert_to_std_metadata<T: ImageMetadata>(im: &T) -> Metadata {
         spacecraft_clock: im.get_spacecraft_clock(),
         created_at: im.get_created_at(),
         updated_at: im.get_updated_at(),
-        decompand: serializers::default_false(),
-        debayer: serializers::default_false(),
-        flatfield: serializers::default_false(),
-        radiometric: serializers::default_false(),
-        inpaint: serializers::default_false(),
-        cropped: serializers::default_false(),
-        history: serializers::default_vec(),
+        decompand: default_false(),
+        debayer: default_false(),
+        flatfield: default_false(),
+        radiometric: default_false(),
+        inpaint: default_false(),
+        cropped: default_false(),
+        history: default_vec(),
     }
 }
 

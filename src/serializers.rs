@@ -36,12 +36,45 @@ fn str_to_vec(s: &str) -> Result<Vec<f64>> {
 }
 
 //////////////////////////////////////////////////
+// chrono::DateTime<Utc>
+//////////////////////////////////////////////////
+
+pub mod as_utc_datetime {
+    use chrono::{DateTime, Utc};
+    use dateparser::DateTimeUtc;
+    use serde::{self, Deserialize, Deserializer, Serializer};
+
+    pub fn serialize<S>(dt: &DateTime<Utc>, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(&dt.to_rfc3339())
+    }
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<DateTime<Utc>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        if s.is_empty() {
+            Ok(Utc::now()) // I don't like this
+        } else {
+            match s.parse::<DateTimeUtc>().map_err(serde::de::Error::custom) {
+                Err(why) => Err(why),
+                Ok(v) => Ok(v.0),
+            }
+        }
+    }
+}
+
+//////////////////////////////////////////////////
 // f64
 //////////////////////////////////////////////////
 
 pub mod as_f64 {
     use serde::{self, Deserialize, Deserializer, Serializer};
 
+    #[expect(unused)]
     pub fn serialize<S>(num: &f64, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -49,6 +82,7 @@ pub mod as_f64 {
         serializer.serialize_str(num.to_string().as_str())
     }
 
+    #[expect(unused)]
     pub fn deserialize<'de, D>(deserializer: D) -> Result<f64, D::Error>
     where
         D: Deserializer<'de>,
@@ -71,6 +105,7 @@ pub mod as_f64 {
 pub mod as_f64_opt {
     use serde::{self, Deserialize, Deserializer, Serializer};
 
+    #[expect(unused)]
     pub fn serialize<S>(num: &Option<f64>, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -82,6 +117,7 @@ pub mod as_f64_opt {
         }
     }
 
+    #[expect(unused)]
     pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<f64>, D::Error>
     where
         D: Deserializer<'de>,
@@ -109,6 +145,7 @@ pub mod as_f64_opt {
 pub mod as_f32 {
     use serde::{self, Deserialize, Deserializer, Serializer};
 
+    #[expect(unused)]
     pub fn serialize<S>(num: &f32, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -116,6 +153,7 @@ pub mod as_f32 {
         serializer.serialize_str(num.to_string().as_str())
     }
 
+    #[expect(unused)]
     pub fn deserialize<'de, D>(deserializer: D) -> Result<f32, D::Error>
     where
         D: Deserializer<'de>,
@@ -138,6 +176,7 @@ pub mod as_f32 {
 pub mod as_f32_opt {
     use serde::{self, Deserialize, Deserializer, Serializer};
 
+    #[expect(unused)]
     pub fn serialize<S>(num: &Option<f32>, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -149,6 +188,7 @@ pub mod as_f32_opt {
         }
     }
 
+    #[expect(unused)]
     pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<f32>, D::Error>
     where
         D: Deserializer<'de>,
@@ -176,6 +216,7 @@ pub mod as_f32_opt {
 pub mod as_i64 {
     use serde::{self, Deserialize, Deserializer, Serializer};
 
+    #[expect(unused)]
     pub fn serialize<S>(num: &i64, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -183,6 +224,7 @@ pub mod as_i64 {
         serializer.serialize_str(num.to_string().as_str())
     }
 
+    #[expect(unused)]
     pub fn deserialize<'de, D>(deserializer: D) -> Result<i64, D::Error>
     where
         D: Deserializer<'de>,
@@ -205,6 +247,7 @@ pub mod as_i64 {
 pub mod as_i64_opt {
     use serde::{self, Deserialize, Deserializer, Serializer};
 
+    #[expect(unused)]
     pub fn serialize<S>(num: &Option<i64>, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -216,6 +259,7 @@ pub mod as_i64_opt {
         }
     }
 
+    #[expect(unused)]
     pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<i64>, D::Error>
     where
         D: Deserializer<'de>,
@@ -243,6 +287,7 @@ pub mod as_i64_opt {
 pub mod as_i32 {
     use serde::{self, Deserialize, Deserializer, Serializer};
 
+    #[expect(unused)]
     pub fn serialize<S>(num: &i32, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -250,6 +295,7 @@ pub mod as_i32 {
         serializer.serialize_str(num.to_string().as_str())
     }
 
+    #[expect(unused)]
     pub fn deserialize<'de, D>(deserializer: D) -> Result<i32, D::Error>
     where
         D: Deserializer<'de>,
@@ -272,6 +318,7 @@ pub mod as_i32 {
 pub mod as_i32_opt {
     use serde::{self, Deserialize, Deserializer, Serializer};
 
+    #[expect(unused)]
     pub fn serialize<S>(num: &Option<i32>, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -283,6 +330,7 @@ pub mod as_i32_opt {
         }
     }
 
+    #[expect(unused)]
     pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<i32>, D::Error>
     where
         D: Deserializer<'de>,
@@ -314,6 +362,7 @@ pub mod as_df_doy {
 
     const FORMAT: &str = "%Y-%jT%H:%M:%S%.3f %z";
 
+    #[expect(unused)]
     pub fn serialize<S>(date: &DateTime<FixedOffset>, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -322,6 +371,7 @@ pub mod as_df_doy {
         serializer.serialize_str(&s)
     }
 
+    #[expect(unused)]
     pub fn deserialize<'de, D>(deserializer: D) -> Result<DateTime<FixedOffset>, D::Error>
     where
         D: Deserializer<'de>,
@@ -347,6 +397,7 @@ pub mod as_df_date {
 
     const FORMAT: &str = "%Y-%m-%dT%H:%M:%S%.3f %z";
 
+    #[expect(unused)]
     pub fn serialize<S>(date: &DateTime<FixedOffset>, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -355,6 +406,7 @@ pub mod as_df_date {
         serializer.serialize_str(&s)
     }
 
+    #[expect(unused)]
     pub fn deserialize<'de, D>(deserializer: D) -> Result<DateTime<FixedOffset>, D::Error>
     where
         D: Deserializer<'de>,
@@ -381,6 +433,7 @@ pub mod as_cahvore {
     use sciimg::vector::Vector;
     use serde::{self, Deserialize, Deserializer, Serializer};
 
+    #[expect(unused)]
     pub fn serialize<S>(model_opt: &CameraModel, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -392,6 +445,7 @@ pub mod as_cahvore {
         }
     }
 
+    #[expect(unused)]
     pub fn deserialize<'de, D>(deserializer: D) -> Result<CameraModel, D::Error>
     where
         D: Deserializer<'de>,
@@ -541,6 +595,7 @@ pub mod as_tuple {
 
     use super::{str_to_vec, vec_to_str};
 
+    #[expect(unused)]
     pub fn serialize<S>(tuple_vec_opt: &Option<Vec<f64>>, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -554,6 +609,7 @@ pub mod as_tuple {
         }
     }
 
+    #[expect(unused)]
     pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<Vec<f64>>, D::Error>
     where
         D: Deserializer<'de>,
@@ -576,6 +632,7 @@ pub mod as_tuple {
 // Defaults
 ////////////////////////////////////////////
 
+#[expect(unused)]
 pub fn default_vec_f64_none() -> Option<Vec<f64>> {
     None
 }
@@ -584,6 +641,7 @@ pub fn default_false() -> bool {
     false
 }
 
+#[expect(unused)]
 pub fn default_blank() -> String {
     "".to_string()
 }

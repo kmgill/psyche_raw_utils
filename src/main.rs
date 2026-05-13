@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 mod caldata;
 mod calibfile;
 mod calibration;
@@ -21,7 +23,6 @@ mod util;
 use anyhow::Result;
 use colored::Colorize;
 use subs::runnable::RunnableSubcommand;
-use subs::*;
 
 #[macro_use]
 extern crate stump;
@@ -46,11 +47,12 @@ struct Cli {
 #[derive(Subcommand)]
 enum Pru {
     #[clap(name = "fetch")]
-    PsycheFetch(psychefetch::PsycheFetch),
-    Info(info::Info),
-    Calibrate(calibrate::Calibrate),
-    HpcFilter(hpcfilter::HpcFilter),
-    Profile(profile::Profile),
+    PsycheFetch(subs::psychefetch::PsycheFetch),
+    Info(subs::info::Info),
+    Calibrate(subs::calibrate::Calibrate),
+    HpcFilter(subs::hpcfilter::HpcFilter),
+    Profile(subs::profile::Profile),
+    UpdateCalData(subs::caldata::UpdateCalData),
     // MslFetch(msl::mslfetch::MslFetch),
     // MslDate(msl::msldate::MslDate),
 
@@ -79,6 +81,7 @@ async fn main() -> Result<(), anyhow::Error> {
         Pru::Calibrate(args) => args.run().await,
         Pru::HpcFilter(args) => args.run().await,
         Pru::Profile(args) => args.run().await,
+        Pru::UpdateCalData(args) => args.run().await,
     } {
         error!("{}", "Unhandled program error:".red());
         error!("{}", why);

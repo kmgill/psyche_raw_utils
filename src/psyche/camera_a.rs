@@ -1,8 +1,6 @@
-use std::f32::consts::E;
-
 use crate::{
-    calibration::*, calprofile::CalProfile, decompanding, enums, enums::Instrument,
-    psycheimage::PsycheImage, util,
+    calibration::*, calprofile::CalProfile, enums, enums::Instrument, psycheimage::PsycheImage,
+    util,
 };
 
 use sciimg::prelude::*;

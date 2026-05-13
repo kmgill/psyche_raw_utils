@@ -239,7 +239,7 @@ impl PsycheImage {
         self.image.hot_pixel_correction(window_size, threshold);
     }
 
-    pub fn to_mono(&mut self) {
+    pub fn convert_to_mono(&mut self) {
         self.image.to_mono();
     }
 

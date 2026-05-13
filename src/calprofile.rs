@@ -2,7 +2,6 @@ use crate::{calibfile, constants};
 use anyhow::anyhow;
 use anyhow::Result;
 use regex::Regex;
-use sciimg::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::Read;

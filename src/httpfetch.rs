@@ -12,6 +12,8 @@ use anyhow::anyhow;
 use anyhow::Result; // you'll find a lot, if not most these days of CLI apps or bins in general are running anyhow::Results in their return types.
 use futures_util::StreamExt;
 use std::string::String;
+
+#[derive(Clone)]
 pub struct HttpFetcher {
     //uri: String, // Use reqwest::Url.
     client: Client,
@@ -41,12 +43,12 @@ impl HttpFetcher {
             timeout: Duration::from_secs(DEFAULT_TIMEOUT),
             numparams: 0,
             client: Client::builder()
-                    .https_only(true)
-                    .user_agent("pru/1.0.0")
-                    .http2_prior_knowledge()
-                    .gzip(true)
-                    .brotli(true)
-                    .http2_adaptive_window(true)
+                .https_only(true)
+                .user_agent("pru/1.0.0")
+                .http2_prior_knowledge()
+                .gzip(true)
+                .brotli(true)
+                .http2_adaptive_window(true)
                 .timeout(Duration::from_secs(DEFAULT_TIMEOUT))
                 .build()?,
         })
@@ -69,7 +71,6 @@ impl HttpFetcher {
     // I'd probably just use the .get(), building my client in main.
     // The reqwest::Client is wrapped in an Arc, so you can clone it cheaply, it's designed for reuse --not so much to be instantiated for every single request you want to make.
     async fn fetch(&self) -> Result<SimpleHttpResponse> {
-        
         let res = self.client.get(self.uri.as_str()).send().await?;
         let status = res.status();
 
@@ -115,18 +116,18 @@ impl HttpFetcher {
         })
     }
 
-    pub async fn into_bytes(&self) -> Result<SimpleHttpResponse> {
+    pub async fn into_bytes(self) -> Result<SimpleHttpResponse> {
         self.fetch().await
     }
 
     pub async fn into_bytes_monitored<F: Fn(u64, u64, f32)>(
-        &self,
+        self,
         f: F,
     ) -> Result<SimpleHttpResponse> {
         self.fetch_monitored(f).await
     }
 
-    pub async fn into_string(&self) -> Result<SimpleHttpResponseString> {
+    pub async fn into_string(self) -> Result<SimpleHttpResponseString> {
         let res = self.fetch().await?;
         Ok(SimpleHttpResponseString {
             text: String::from_utf8(res.bytes).expect("Failed to parse response to string"),
@@ -135,7 +136,7 @@ impl HttpFetcher {
     }
 
     pub async fn into_string_monitored<F: Fn(u64, u64, f32)>(
-        &self,
+        self,
         f: F,
     ) -> Result<SimpleHttpResponseString> {
         let res = self.fetch_monitored(f).await?;

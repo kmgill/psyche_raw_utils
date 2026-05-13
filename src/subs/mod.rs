@@ -1,3 +1,4 @@
+pub mod caldata;
 pub mod calibrate;
 pub mod hpcfilter;
 pub mod info;
@@ -79,8 +80,8 @@ macro_rules! pb_set_length {
 #[macro_export]
 macro_rules! pb_set_print_and_length {
     ($x: expr) => {
-        crate::pb_set_print!();
-        crate::pb_set_length!($x);
+        $crate::pb_set_print!();
+        $crate::pb_set_length!($x);
     };
 }
 

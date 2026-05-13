@@ -26,16 +26,15 @@ clap = { version = "4.5.54", features = ["derive"] }
 serde_json = "1.0.149"
 const_format = "0.2.35"
 #reqwest = { version = "0.13.1", features = ["stream"] }
-reqwest = { version = "0.12.4", default-features = false, features = [
+reqwest = { version = "0.13.3", default-features = false, features = [
     "http2",
-    "rustls-tls",
     "brotli",
     "gzip",
     "stream",
 ] }
 platforms = "3.7.0"
 lab = "0.11.0"
-toml = "0.9.8"
+toml = "1.1.2"
 serde = { version = "1.0.228", features = ["derive"] }
 string-builder = "0.2.0"
 sciimg = { git = "https://github.com/MarsRaw/sciimg.git", branch = "main", features = [
@@ -47,6 +46,7 @@ weezl = "0.1.5"
 gif = "0.14.1"
 rayon = "1.11.0"
 chrono = "0.4.43"
+dateparser = "0.3.1"
 dirs = "6.0.0"
 wild = "2.2.1"
 colored = "3.1.1"

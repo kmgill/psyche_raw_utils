@@ -1,4 +1,7 @@
+use crate::serializers::as_utc_datetime;
 use crate::{constants, metadata::*};
+use chrono::DateTime;
+use chrono::Utc;
 use sciimg::prelude::*;
 
 use anyhow::anyhow;
@@ -12,8 +15,10 @@ pub struct ImageRecord {
     pub id: u32,
     pub image_id: String,
     pub url: String,
-    pub date: String,
-    pub date_received: String,
+    #[serde(with = "as_utc_datetime")]
+    pub date: DateTime<Utc>,
+    #[serde(with = "as_utc_datetime")]
+    pub date_received: DateTime<Utc>,
     pub width: u32,
     pub height: u32,
     pub camera: String,
@@ -26,8 +31,10 @@ pub struct ImageRecord {
     pub distance: Option<u32>,
     pub orbit_number: Option<u32>,
     pub spacecraft_clock: Option<f64>,
-    pub created_at: String,
-    pub updated_at: String,
+    #[serde(with = "as_utc_datetime")]
+    pub created_at: DateTime<Utc>,
+    #[serde(with = "as_utc_datetime")]
+    pub updated_at: DateTime<Utc>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -36,12 +43,12 @@ pub struct PsycheApiResults {
     pub per_page: u32,
     pub total: u32,
     pub page: u32,
-    pub more: bool
+    pub more: bool,
 }
 
 impl ImageMetadata for ImageRecord {
-    fn get_date_received(&self) -> String {
-        self.date_received.clone()
+    fn get_date_received(&self) -> DateTime<Utc> {
+        self.date_received
     }
 
     fn get_id(&self) -> u32 {
@@ -56,8 +63,8 @@ impl ImageMetadata for ImageRecord {
         self.url.clone()
     }
 
-    fn get_date_taken_utc(&self) -> String {
-        self.date.clone()
+    fn get_date_taken_utc(&self) -> DateTime<Utc> {
+        self.date
     }
 
     fn get_width(&self) -> u32 {
@@ -97,23 +104,23 @@ impl ImageMetadata for ImageRecord {
     }
 
     fn get_distance(&self) -> Option<u32> {
-        self.distance.clone()
+        self.distance
     }
 
     fn get_orbit_number(&self) -> Option<u32> {
-        self.orbit_number.clone()
+        self.orbit_number
     }
 
     fn get_spacecraft_clock(&self) -> Option<f64> {
-        self.spacecraft_clock.clone()
+        self.spacecraft_clock
     }
 
-    fn get_created_at(&self) -> String {
-        self.created_at.clone()
+    fn get_created_at(&self) -> DateTime<Utc> {
+        self.created_at
     }
 
-    fn get_updated_at(&self) -> String {
-        self.updated_at.clone()
+    fn get_updated_at(&self) -> DateTime<Utc> {
+        self.updated_at
     }
 }
 

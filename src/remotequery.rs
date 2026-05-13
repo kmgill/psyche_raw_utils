@@ -4,6 +4,7 @@ use crate::httpfetch;
 use crate::metadata::Metadata;
 use crate::util::{save_image_json, InstrumentMap};
 use anyhow::Result;
+use chrono::{DateTime, Utc};
 use cli_table::{Cell, Style, Table};
 use rayon::prelude::*;
 use sciimg::path;
@@ -18,10 +19,11 @@ pub struct RemoteQuery {
     pub cameras: Vec<String>,
     pub num_per_page: i32,
     pub page: Option<i32>,
-    pub min_date: String,
-    pub max_date: String,
-    pub filter_num: Option<u8>,
+    pub start_date: DateTime<Utc>,
+    pub end_date: DateTime<Utc>,
+    pub filter_num: Option<Vec<u32>>,
     pub filter: Option<Vec<String>>,
+    pub filter_wavelenth: Option<Vec<String>>,
     pub list_only: bool,
     pub search: Vec<String>,
     pub only_new: bool,
@@ -140,7 +142,7 @@ fn print_table(images: &[Metadata], query: &RemoteQuery) {
                 md.camera_name.clone().cell(),
                 md.filter_name.clone().cell(),
                 md.filter_wavelength.clone().cell(),
-                md.date_taken_utc.clone().cell(),
+                md.date_taken_utc.cell(),
                 nulltostr!(md.orbit_number).cell(),
                 if path::file_exists(&image_destination_path) {
                     constants::status::YES

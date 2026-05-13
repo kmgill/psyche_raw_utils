@@ -9,10 +9,7 @@ pub struct JsonFetcher {
 impl JsonFetcher {
     pub fn new(uri: &str) -> Result<JsonFetcher> {
         Ok(JsonFetcher {
-            fetcher: match HttpFetcher::new(uri) {
-                Ok(it) => it,
-                Err(err) => return Err(err),
-            },
+            fetcher: HttpFetcher::new(uri)?,
         })
     }
 
@@ -21,11 +18,11 @@ impl JsonFetcher {
     }
 
     pub async fn fetch(&self) -> Result<Value> {
-        let json_text = self.fetcher.into_string().await?; //as_string() is also a common name for this.
+        let json_text = self.fetcher.clone().into_string().await?; //as_string() is also a common name for this.
         Ok(serde_json::from_str(&json_text.text)?)
     }
 
     pub async fn fetch_str(&self) -> Result<String> {
-        Ok(self.fetcher.into_string().await?.text)
+        Ok(self.fetcher.clone().into_string().await?.text)
     }
 }

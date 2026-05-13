@@ -2,7 +2,6 @@ use crate::enums::CalFileType;
 use crate::{constants, enums};
 use anyhow::anyhow;
 use anyhow::Result;
-use dirs;
 use sciimg::path;
 use std::env;
 use std::fs::File;

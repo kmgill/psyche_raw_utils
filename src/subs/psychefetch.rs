@@ -8,8 +8,11 @@ use crate::psyche::fetch::PsycheFetch as PsycheFetchClient;
 // use crate::prelude::*;
 
 use crate::remotequery::FetchError;
-use crate::{remotequery, util};
 use crate::subs::runnable::RunnableSubcommand;
+use crate::{remotequery, util};
+
+use chrono::Duration;
+use dateparser::DateTimeUtc;
 
 crate::pb_create!();
 
@@ -22,11 +25,11 @@ pub struct PsycheFetch {
     #[arg(long, short = 'd', help = "Image Date")]
     date: Option<String>,
 
-    #[arg(long, short = 'm', help = "Starting Image Date")]
-    mindate: Option<String>,
+    #[arg(long, short = 's', help = "Starting Image Date")]
+    startdate: Option<String>,
 
-    #[arg(long, short = 'M', help = "Ending Image Date")]
-    maxdate: Option<String>,
+    #[arg(long, short = 'e', help = "Ending Image Date")]
+    enddate: Option<String>,
 
     #[arg(long, short = 'l', help = "Don't download, only list results")]
     list: bool,
@@ -37,10 +40,16 @@ pub struct PsycheFetch {
     #[arg(long, short = 'p', help = "Results page (starts at 1)")]
     page: Option<u8>,
 
-    #[arg(long, short = 'f', help = "Camera filter number")]
-    filter_num: Option<u8>,
+    #[arg(long, short = 'f', help = "Camera filter number", num_args = 1..)]
+    filter_num: Option<Vec<u32>>,
 
-    #[arg(long, short = 'F', help = "filter on image id", num_args = 1..)]
+    #[arg(long, short = 'F', help = "Camera filter name", num_args = 1..)]
+    filter_name: Option<Vec<String>>,
+
+    #[arg(long, short = 'w', help = "Camera filter wavelength", num_args = 1..)]
+    filter_wavelength: Option<Vec<String>>,
+
+    #[arg(long, short = 'i', help = "filter on image id", num_args = 1..)]
     filter: Option<Vec<String>>,
 
     #[arg(long, short = 'I', help = "List instruments")]
@@ -91,16 +100,21 @@ impl RunnableSubcommand for PsycheFetch {
             Ok(v) => v,
         };
 
-        let min_date = match &self.mindate {
-            Some(s) => s.clone(),
-            None => "2000-01-01".to_string()
+        let (start_date, end_date) = if let Some(on_date) = &self.date {
+            let dt = on_date.parse::<DateTimeUtc>()?.0;
+            (dt, dt + Duration::days(1))
+        } else {
+            (
+                match &self.startdate {
+                    Some(s) => s.parse::<DateTimeUtc>()?.0,
+                    None => "2000-01-01".parse::<DateTimeUtc>()?.0,
+                },
+                match &self.enddate {
+                    Some(s) => s.parse::<DateTimeUtc>()?.0 + Duration::days(1),
+                    None => "2000-01-01".parse::<DateTimeUtc>()?.0,
+                },
+            )
         };
-
-        let max_date = match &self.maxdate {
-            Some(s) => s.clone(),
-            None => "2100-01-01".to_string()
-        };
-
 
         match remotequery::perform_fetch(
             &client,
@@ -108,13 +122,14 @@ impl RunnableSubcommand for PsycheFetch {
                 cameras,
                 num_per_page,
                 page,
-                min_date: min_date,
-                max_date: max_date,
+                start_date,
+                end_date,
                 list_only: self.list,
                 search,
                 only_new: self.new,
-                filter_num: self.filter_num,
-                filter: self.filter.clone(),
+                filter_num: self.filter_num.clone(),
+                filter: self.filter_name.clone(),
+                filter_wavelenth: self.filter_wavelength.clone(),
                 output_path: output,
             },
             |total| crate::pb_set_length!(total),
