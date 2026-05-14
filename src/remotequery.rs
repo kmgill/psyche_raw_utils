@@ -134,8 +134,11 @@ fn print_table(images: &[Metadata], query: &RemoteQuery) {
     let table = images
         .iter()
         .map(|md| {
-            let image_destination_path =
-                format!("{}/{}", query.output_path, path::basename(md.url.as_str()));
+            let image_destination_path = format!(
+                "{}/{}.png",
+                query.output_path,
+                assemble_output_file_base_name(md)
+            );
 
             vec![
                 md.imageid.clone().cell(),
