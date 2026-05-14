@@ -32,6 +32,8 @@ This is the easiest installation method for *nix-based systems, though it does r
 
 Bell, J.F., Ravine, M.A., Caplinger, M.A. et al. The Psyche Multispectral Imager Investigation: Characterizing the Geology, Topography, and Multispectral Properties of a Metal-Rich World. Space Sci Rev 221, 47 (2025). https://doi.org/10.1007/s11214-025-01169-3 https://doi.org/10.1007/s11214-025-01169-3
 
+H. Bates-Tarasewicz et al., "The Psyche Multispectral Imager Flight Software Interface," 2025 IEEE Aerospace Conference, Big Sky, MT, USA, 2025, pp. 1-11, doi: 10.1109/AERO63441.2025.11068470. https://doi.org/10.1109/AERO63441.2025.11068470
+
 Jaumann, R., Bell, J.F., Polanskey, C.A. et al. The Psyche Topography and Geomorphology Investigation. Space Sci Rev 218, 7 (2022). https://doi.org/10.1007/s11214-022-00874-7
 
 Telea, Alexandru. (2004). An Image Inpainting Technique Based on the Fast Marching Method. Journal of Graphics Tools. 9. 10.1080/10867651.2004.10487596. 
