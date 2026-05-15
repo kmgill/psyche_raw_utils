@@ -11,7 +11,11 @@ use crate::remotequery::FetchError;
 use crate::subs::runnable::RunnableSubcommand;
 use crate::{remotequery, util};
 
-use chrono::Duration;
+use chrono::offset::Local;
+use chrono::offset::Utc;
+use chrono::{DateTime, Duration, NaiveTime, SubsecRound};
+use dateparser::parse_with;
+use dateparser::parse_with_timezone;
 use dateparser::DateTimeUtc;
 
 crate::pb_create!();
@@ -62,6 +66,10 @@ pub struct PsycheFetch {
     new: bool,
 }
 
+fn parse_date_parameter(on_date: &str) -> Result<DateTime<Utc>> {
+    parse_with(on_date, &Utc, NaiveTime::from_hms_opt(0, 0, 0).unwrap())
+}
+
 impl RunnableSubcommand for PsycheFetch {
     async fn run(&self) -> Result<()> {
         crate::pb_set_print!();
@@ -101,20 +109,22 @@ impl RunnableSubcommand for PsycheFetch {
         };
 
         let (start_date, end_date) = if let Some(on_date) = &self.date {
-            let dt = on_date.parse::<DateTimeUtc>()?.0;
+            let dt = parse_date_parameter(on_date)?;
             (dt, dt + Duration::days(1))
         } else {
             (
                 match &self.startdate {
-                    Some(s) => s.parse::<DateTimeUtc>()?.0,
+                    Some(s) => parse_date_parameter(s)?,
                     None => "2000-01-01".parse::<DateTimeUtc>()?.0,
                 },
                 match &self.enddate {
-                    Some(s) => s.parse::<DateTimeUtc>()?.0 + Duration::days(1),
-                    None => "2000-01-01".parse::<DateTimeUtc>()?.0,
+                    Some(s) => parse_date_parameter(s)? + Duration::days(1),
+                    None => "2100-01-01".parse::<DateTimeUtc>()?.0,
                 },
             )
         };
+
+        info!("Query Dates: {:?} - {:?}", start_date, end_date);
 
         match remotequery::perform_fetch(
             &client,
