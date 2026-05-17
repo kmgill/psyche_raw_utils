@@ -26,6 +26,12 @@ impl Calibration for PsycheCameraB {
             cal_warn(cal_context, &out_file)
         } else {
             let mut raw = PsycheImage::open(input_file, enums::Instrument::PsycheCameraB);
+
+            if raw.image.width == 1648 && raw.image.height == 1200 {
+                vprintln!("Cropping out dark reference pixels...");
+                raw.image.crop(48, 16, 1584, 1184);
+            }
+
             raw.desmear_ccd_image(cal_context.desmear_epsilon);
 
             info!("Writing to disk...");
