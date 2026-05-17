@@ -137,7 +137,7 @@ impl RunnableSubcommand for Calibrate {
                 apply_ilt: !self.raw,
                 hot_pixel_detection_threshold: self.hpc_threshold.unwrap_or(0.0),
                 hot_pixel_window_size: self.hpc_window.unwrap_or(3),
-                desmear_epsilon: self.desmear_epsilon.unwrap_or(0.001),
+                desmear_epsilon: self.desmear_epsilon.unwrap_or(0.0),
                 filename_suffix: String::from(constants::OUTPUT_FILENAME_APPEND),
                 mission: None,
                 instrument: None,

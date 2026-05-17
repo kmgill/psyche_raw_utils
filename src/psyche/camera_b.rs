@@ -32,7 +32,13 @@ impl Calibration for PsycheCameraB {
                 raw.image.crop(48, 16, 1584, 1184);
             }
 
-            raw.desmear_ccd_image(cal_context.desmear_epsilon);
+            if cal_context.desmear_epsilon >= 0.0 {
+                info!(
+                    "Applying CCD frame-transfer smear correction with epsilon of {}",
+                    cal_context.desmear_epsilon
+                );
+                raw.desmear_ccd_image(cal_context.desmear_epsilon);
+            } // else, don't bother
 
             info!("Writing to disk...");
             raw.update_history();

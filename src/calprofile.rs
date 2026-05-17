@@ -77,7 +77,7 @@ fn default_hpc_threshold() -> f32 {
 }
 
 fn default_desmear_epsilon() -> f32 {
-    0.001
+    0.0
 }
 
 pub fn load_calibration_profile(file_path: &String) -> Result<CalProfile> {
