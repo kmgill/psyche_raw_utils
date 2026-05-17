@@ -177,6 +177,10 @@ impl PsycheImage {
         self.apply_flat(&flat.image);
     }
 
+    pub fn desmear_ccd_image(&mut self, epsilon: f32) {
+        self.image.desmear_ccd_image(epsilon);
+    }
+
     pub fn crop(&mut self, x: usize, y: usize, width: usize, height: usize) {
         self.image.crop(x, y, width, height);
     }

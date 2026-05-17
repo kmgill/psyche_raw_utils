@@ -44,6 +44,9 @@ pub struct Calibrate {
     #[arg(long, short = 'w', help = "HPC window size")]
     hpc_window: Option<i32>,
 
+    #[arg(long, short = 'd', help = "Desmear paramter (t_transfer / t_exposure)")]
+    desmear_epsilon: Option<f32>,
+
     #[arg(long, short = 'P', help = "Calibration profile", num_args = 1..)]
     profile: Option<Vec<String>>,
 
@@ -63,13 +66,16 @@ impl Calibrate {
         let metadata_file = util::replace_image_extension(input_file, ".json");
         info!("Checking for metadata file at {}", metadata_file);
         if path::file_exists(metadata_file.as_str()) {
-            vprintln!("Metadata file exists for loaded image: {}", metadata_file);
+            info!("Metadata file exists for loaded image: {}", metadata_file);
             match metadata::load_image_metadata(&metadata_file) {
                 Err(_) => {
                     warn!("Could not load metadata file!");
                     None
                 } // Error loading the metadata file
-                Ok(md) => calibrator_for_instrument_from_str(&md.instrument),
+                Ok(md) => {
+                    info!("Reported instrument: {}", md.instrument);
+                    calibrator_for_instrument_from_str(&md.instrument)
+                }
             }
         } else {
             // metadata file is missing
@@ -131,6 +137,7 @@ impl RunnableSubcommand for Calibrate {
                 apply_ilt: !self.raw,
                 hot_pixel_detection_threshold: self.hpc_threshold.unwrap_or(0.0),
                 hot_pixel_window_size: self.hpc_window.unwrap_or(3),
+                desmear_epsilon: self.desmear_epsilon.unwrap_or(0.001),
                 filename_suffix: String::from(constants::OUTPUT_FILENAME_APPEND),
                 mission: None,
                 instrument: None,

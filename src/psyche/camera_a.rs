@@ -11,7 +11,7 @@ use anyhow::Result;
 pub struct PsycheCameraA {}
 impl Calibration for PsycheCameraA {
     fn accepts_instrument(&self, instrument: Instrument) -> bool {
-        matches!(instrument, Instrument::PsycheCameraB)
+        matches!(instrument, Instrument::PsycheCameraA)
     }
 
     fn process_file(
@@ -26,6 +26,8 @@ impl Calibration for PsycheCameraA {
             cal_warn(cal_context, &out_file)
         } else {
             let mut raw = PsycheImage::open(input_file, enums::Instrument::PsycheCameraA);
+            raw.desmear_ccd_image(cal_context.desmear_epsilon);
+
             // Doesn't actually do anything yet.
             info!("Writing to disk...");
             raw.update_history();

@@ -23,6 +23,9 @@ pub struct CalProfile {
     #[serde(default = "default_hpc_window_size")]
     pub hot_pixel_window_size: i32,
 
+    #[serde(default = "default_desmear_epsilon")]
+    pub desmear_epsilon: f32,
+
     #[serde(default = "default_filename_suffix")]
     pub filename_suffix: String,
 
@@ -44,6 +47,7 @@ impl Default for CalProfile {
             hot_pixel_detection_threshold: default_hpc_threshold(),
             hot_pixel_window_size: default_hpc_window_size(),
             filename_suffix: default_filename_suffix(),
+            desmear_epsilon: default_desmear_epsilon(),
             mission: None,
             instrument: None,
             description: None,
@@ -70,6 +74,10 @@ fn default_true() -> bool {
 
 fn default_hpc_threshold() -> f32 {
     0.0
+}
+
+fn default_desmear_epsilon() -> f32 {
+    0.001
 }
 
 pub fn load_calibration_profile(file_path: &String) -> Result<CalProfile> {
