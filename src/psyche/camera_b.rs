@@ -26,7 +26,8 @@ impl Calibration for PsycheCameraB {
             cal_warn(cal_context, &out_file)
         } else {
             let mut raw = PsycheImage::open(input_file, enums::Instrument::PsycheCameraB);
-            // Doesn't actually do anything yet.
+            raw.desmear_ccd_image(cal_context.desmear_epsilon);
+
             info!("Writing to disk...");
             raw.update_history();
             match raw.save(&out_file) {
