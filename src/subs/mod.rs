@@ -1,5 +1,6 @@
 pub mod caldata;
 pub mod calibrate;
+pub mod compose;
 pub mod hpcfilter;
 pub mod info;
 pub mod profile;

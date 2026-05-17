@@ -53,6 +53,7 @@ enum Pru {
     HpcFilter(subs::hpcfilter::HpcFilter),
     Profile(subs::profile::Profile),
     UpdateCalData(subs::caldata::UpdateCalData),
+    Compose(subs::compose::Compose),
     // MslFetch(msl::mslfetch::MslFetch),
     // MslDate(msl::msldate::MslDate),
 
@@ -82,6 +83,7 @@ async fn main() -> Result<(), anyhow::Error> {
         Pru::HpcFilter(args) => args.run().await,
         Pru::Profile(args) => args.run().await,
         Pru::UpdateCalData(args) => args.run().await,
+        Pru::Compose(args) => args.run().await,
     } {
         error!("{}", "Unhandled program error:".red());
         error!("{}", why);
