@@ -35,9 +35,9 @@ toml = "1.1.2"
 serde = { version = "1.0.228", features = ["derive"] }
 string-builder = "0.2.0"
 sciimg = { git = "https://github.com/MarsRaw/sciimg.git", branch = "main", features = [
-   "rayon",
+    "rayon",
 ] }
-#sciimg = {path = "../sciimg"}
+#sciimg = { path = "../sciimg" }
 stump = { git = "https://github.com/MarsRaw/stump.git" }
 rayon = "1.11.0"
 chrono = "0.4.43"

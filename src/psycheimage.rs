@@ -177,6 +177,11 @@ impl PsycheImage {
         self.apply_flat(&flat.image);
     }
 
+    pub fn dark_signal_correction_with_ref_cols(&mut self, masked_col_index: usize) {
+        self.image
+            .dark_signal_correction_with_ref_cols(masked_col_index);
+    }
+
     pub fn desmear_ccd_image(&mut self, epsilon: f32) {
         self.image.desmear_ccd_image(epsilon);
     }

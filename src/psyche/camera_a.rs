@@ -27,18 +27,25 @@ impl Calibration for PsycheCameraA {
         } else {
             let mut raw = PsycheImage::open(input_file, enums::Instrument::PsycheCameraA);
 
-            if raw.image.width == 1648 && raw.image.height == 1200 {
-                vprintln!("Cropping out dark reference pixels...");
-                raw.image.crop(48, 16, 1584, 1184);
+            if raw.image.width == 1648 {
+                info!("Applying Dark Signal Correction. Reference column is 15");
+                raw.dark_signal_correction_with_ref_cols(15);
+            } else {
+                info!("Reference columns may have been cropped due to subframing. Skipping dark signal correction.");
             }
 
-            if cal_context.desmear_epsilon >= 0.0 {
+            if (cal_context.desmear_epsilon - 0.0).abs() > f32::EPSILON {
                 info!(
                     "Applying CCD frame-transfer smear correction with epsilon of {}",
                     cal_context.desmear_epsilon
                 );
                 raw.desmear_ccd_image(cal_context.desmear_epsilon);
             } // else, don't bother
+
+            if raw.image.width == 1648 && raw.image.height == 1200 {
+                vprintln!("Cropping out dark reference pixels...");
+                raw.image.crop(48, 16, 1584, 1184);
+            }
 
             // Doesn't actually do anything yet.
             info!("Writing to disk...");
