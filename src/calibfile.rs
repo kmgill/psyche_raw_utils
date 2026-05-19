@@ -139,8 +139,8 @@ pub fn locate_calibration_file(file_path: &str) -> Result<String> {
 
     // Some default locations
     let mut locations = vec![
-        String::from("mars-raw-utils-data/caldata"), // Running within the repo directory (dev: cargo run --bin ...)
-        String::from("/usr/share/mars_raw_utils/data/"), // Linux, installed via apt or rpm
+        String::from("psyche-raw-utils-data/caldata"), // Running within the repo directory (dev: cargo run --bin ...)
+        String::from("/usr/share/psyche_raw_utils/data/"), // Linux, installed via apt or rpm
     ];
 
     if let Ok(exe_path) = std::env::current_exe() {

@@ -1,5 +1,10 @@
 use crate::{
-    calibration::*, calprofile::CalProfile, enums, enums::Instrument, psycheimage::PsycheImage,
+    calibration::*,
+    calprofile::CalProfile,
+    decompanding,
+    enums::{self, Instrument},
+    inpaintmask,
+    psycheimage::PsycheImage,
     util,
 };
 
@@ -27,6 +32,16 @@ impl Calibration for PsycheCameraA {
         } else {
             let mut raw = PsycheImage::open(input_file, enums::Instrument::PsycheCameraA);
 
+            let data_max = if cal_context.apply_ilt {
+                info!("Decompanding...");
+                let lut =
+                    decompanding::get_ilt_for_instrument(enums::Instrument::PsycheCameraA).unwrap();
+                raw.decompand(&lut);
+                lut.max() as f32
+            } else {
+                255.0
+            };
+
             if raw.image.width == 1648 {
                 info!("Applying Dark Signal Correction. Reference column is 15");
                 raw.dark_signal_correction_with_ref_cols(15);
@@ -42,12 +57,19 @@ impl Calibration for PsycheCameraA {
                 raw.desmear_ccd_image(cal_context.desmear_epsilon);
             } // else, don't bother
 
+            info!("Applying inpainting repair of blemishes...");
+            let mut inpaint_mask =
+                inpaintmask::load_mask(enums::Instrument::PsycheCameraA).unwrap();
+            raw.apply_inpaint_fix_with_mask(&inpaint_mask);
+
             if raw.image.width == 1648 && raw.image.height == 1200 {
                 vprintln!("Cropping out dark reference pixels...");
                 raw.image.crop(48, 16, 1584, 1184);
             }
 
-            // Doesn't actually do anything yet.
+            info!("Normalizing for 16bit output");
+            raw.image.normalize_to_16bit_with_max(data_max);
+
             info!("Writing to disk...");
             raw.update_history();
             match raw.save(&out_file) {

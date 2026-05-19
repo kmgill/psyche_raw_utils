@@ -1,5 +1,9 @@
 use crate::{
-    calibration::*, calprofile::CalProfile, enums, enums::Instrument, psycheimage::PsycheImage,
+    calibration::*,
+    calprofile::CalProfile,
+    decompanding,
+    enums::{self, Instrument},
+    psycheimage::PsycheImage,
     util,
 };
 
@@ -27,6 +31,16 @@ impl Calibration for PsycheCameraB {
         } else {
             let mut raw = PsycheImage::open(input_file, enums::Instrument::PsycheCameraB);
 
+            let data_max = if cal_context.apply_ilt {
+                info!("Decompanding...");
+                let lut =
+                    decompanding::get_ilt_for_instrument(enums::Instrument::PsycheCameraA).unwrap();
+                raw.decompand(&lut);
+                lut.max() as f32
+            } else {
+                255.0
+            };
+
             if raw.image.width == 1648 {
                 info!("Applying Dark Signal Correction. Reference column is 15");
                 raw.dark_signal_correction_with_ref_cols(15);
@@ -46,6 +60,9 @@ impl Calibration for PsycheCameraB {
                 vprintln!("Cropping out dark reference pixels...");
                 raw.image.crop(48, 16, 1584, 1184);
             }
+
+            info!("Normalizing for 16bit output");
+            raw.image.normalize_to_16bit_with_max(data_max);
 
             info!("Writing to disk...");
             raw.update_history();
